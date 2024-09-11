@@ -1,32 +1,26 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable
-from collections.abc import Container
-from collections.abc import Generator
-from collections.abc import Iterable
-from collections.abc import Iterator
-from collections.abc import Sequence
 import copy
 import json
 import os
 import pickle
 import time
-from typing import Any
-from typing import cast
 import warnings
+from collections.abc import Callable, Container, Generator, Iterable, Iterator, Sequence
+from typing import Any, cast
 
 import numpy as np
 import optuna
+import tqdm
 from optuna._imports import try_import
 from optuna.study import Study
-from optuna.trial import FrozenTrial
-from optuna.trial import TrialState
-import tqdm
+from optuna.trial import FrozenTrial, TrialState
 
-from optuna_integration._lightgbm_tuner.alias import _handling_alias_metrics
-from optuna_integration._lightgbm_tuner.alias import _handling_alias_parameters
-
+from optuna_integration._lightgbm_tuner.alias import (
+    _handling_alias_metrics,
+    _handling_alias_parameters,
+)
 
 with try_import() as _imports:
     import lightgbm as lgb
@@ -586,6 +580,7 @@ class _LightGBMBaseTuner(_BaseTuner):
                 timeout=_timeout,
                 catch=(),
                 callbacks=self._optuna_callbacks,
+                gc_after_trial=True,
             )
 
         if pbar:
